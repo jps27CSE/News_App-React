@@ -7,52 +7,51 @@ import Pagination from '../components/pagination'
 import Loading from '../components/loading'
 import axios from 'axios'
 
+class App extends React.Component {
 
-const fakeNews = [
-  {
-    title: 'Title',
-    content: 'Content',
-    url: 'https://linktonews.com',
-    urlToImage: 'https://linktoimage.com',
-    publishedAt: 'published date and time',
-    source: {
-      name: 'CNN'
-    }
-  },
-  {
-    title: 'Title',
-    content: 'Content',
-    url: 'https://linktonews.com',
-    urlToImage: 'https://linktoimage.com',
-    publishedAt: 'published date and time',
-    source: {
-      name: 'CNN'
+  state = {
+    news: [],
+    category: newsCategory.technology
+  }
+
+  changeCategory = (category) => {
+    this.setState({ category })
+  }
+
+  componentDidMount() {
+    const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
+    axios.get(url)
+      .then(response => {
+        this.setState({
+          news: response.data.articles,
+        })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.category != this.state.category) {
+      const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
+      axios.get(url)
+        .then(response => {
+          this.setState({
+            news: response.data.articles,
+          })
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
-]
 
-const URL = 'https://jsonplaceholder.typicode.com/users'
-axios.get(URL).then(response => {
-  console.log(response.data)
-})
-
-const user = {
-  name: 'test',
-  email: 'test@gmail.com',
-  username: 'test123'
-}
-
-axios.post(URL, user).then(response => {
-  console.log(response)
-})
-
-class App extends React.Component {
   render() {
     return (
       <div className="container">
         <div className="row">
           <div className="col-sm-6 offset-md-3">
-            <Header category={newsCategory.technology} />
+            <Header category={this.state.category} changeCategory={this.changeCategory} />
             <div className="d-flex">
               <p className="text-black-50">
                 About {0} results found
@@ -61,7 +60,7 @@ class App extends React.Component {
                 {1} page of {100}
               </p>
             </div>
-            <NewsList news={fakeNews} />
+            <NewsList news={this.state.news} />
             <Pagination />
             <Loading />
           </div>
