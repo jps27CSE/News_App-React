@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react'
 import Header from '../components/header'
 import NewsList from '../components/newsList'
-import { newsCategory } from '../news/index'
+import News,{ newsCategory } from '../news/index'
 import Pagination from '../components/pagination'
 import Loading from '../components/loading'
 import axios from 'axios'
@@ -19,31 +19,36 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
-    axios.get(url)
-      .then(response => {
-        this.setState({
-          news: response.data.articles,
-        })
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    // const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
+    // axios.get(url)
+    //   .then(response => {
+    //     this.setState({
+    //       news: response.data.articles,
+    //     })
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //   })
+
+    const news = new News(newsCategory.technology)
+    news.getNews().then((data) => {
+      console.log(data)
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.category != this.state.category) {
-      const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
-      axios.get(url)
-        .then(response => {
-          this.setState({
-            news: response.data.articles,
-          })
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    }
+    // if (prevState.category != this.state.category) {
+    //   const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
+    //   axios.get(url)
+    //     .then(response => {
+    //       this.setState({
+    //         news: response.data.articles,
+    //       })
+    //     })
+    //     .catch(error => {
+    //       console.log(error)
+    //     })
+    // }
   }
 
   render() {
