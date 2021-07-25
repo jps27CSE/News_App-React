@@ -2,54 +2,32 @@ import './App.css';
 import React from 'react'
 import Header from '../components/header'
 import NewsList from '../components/newsList'
-import News,{ newsCategory } from '../news/index'
+import News, { newsCategory } from '../news/index'
 import Pagination from '../components/pagination'
 import Loading from '../components/loading'
-import axios from 'axios'
 
+const news = new News(newsCategory.technology)
 class App extends React.Component {
 
   state = {
-    news: [],
-    category: newsCategory.technology
-  }
+    data: {},
+    isLoading: true
+  };
 
-  changeCategory = (category) => {
-    this.setState({ category })
-  }
 
   componentDidMount() {
-    // const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
-    // axios.get(url)
-    //   .then(response => {
-    //     this.setState({
-    //       news: response.data.articles,
-    //     })
-    //   })
-    //   .catch(error => {
-    //     console.log(error)
-    //   })
-
-    const news = new News(newsCategory.technology)
-    news.getNews().then((data) => {
-      console.log(data)
-    })
+    news.getNews()
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+        this.setState({ isLoading: false })
+      })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // if (prevState.category != this.state.category) {
-    //   const url = `${process.env.REACT_APP_NEWS_URL}?apiKey=${process.env.REACT_APP_NEWS_API_KEY}&category=${this.state.category}&pageSize=5`
-    //   axios.get(url)
-    //     .then(response => {
-    //       this.setState({
-    //         news: response.data.articles,
-    //       })
-    //     })
-    //     .catch(error => {
-    //       console.log(error)
-    //     })
-    // }
-  }
+
 
   render() {
     return (
@@ -65,9 +43,13 @@ class App extends React.Component {
                 {1} page of {100}
               </p>
             </div>
-            <NewsList news={this.state.news} />
+           {this.state.isLoading?(
+                   <Loading/>
+           ):(
+            <NewsList news={this.state.data.article} />
+           )}
             <Pagination />
-            <Loading />
+            {/* <Loading /> */}
           </div>
         </div>
       </div>
