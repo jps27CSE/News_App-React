@@ -27,6 +27,8 @@ export default class News {
             this._totalPage = Math.ceil(data.totalResults / this._pageSize);
             return {
                 article: data.articles,
+                isNext: this._isNext(),
+                isPrevious: this._isPrevious(),
                 totalPage: this._totalPage,
                 currentPage: this._currentPage,
                 category: this._category,

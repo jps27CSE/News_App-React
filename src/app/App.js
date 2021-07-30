@@ -27,9 +27,47 @@ class App extends React.Component {
       })
   }
 
+  next = () => {
+    if (this.state.data.isNext) {
+      this.setState({ isLoading: true })
+    }
+    news.next()
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+        this.setState({ isLoading: false })
+      })
+  }
 
+  prev = () => {
+    if (this.state.data.isPrevious) {
+      
+      this.setState({ isLoading: true })
+    }
+    news.next()
+      .then(data => {
+        this.setState({ data, isLoading: false })
+      })
+      .catch(e => {
+        console.log(e);
+        alert('Something went wrong')
+        this.setState({ isLoading: false })
+      })
+  }
 
   render() {
+    const{
+      article,
+      isPrevious,
+      isNext,
+      category,
+      totalResults,
+      currentPage,
+      totalPage
+    } = this.state.data
     return (
       <div className="container">
         <div className="row">
@@ -43,12 +81,22 @@ class App extends React.Component {
                 {1} page of {100}
               </p>
             </div>
-           {this.state.isLoading?(
-                   <Loading/>
-           ):(
-            <NewsList news={this.state.data.article} />
-           )}
-            <Pagination />
+            {this.state.isLoading ? (
+              <Loading />
+            ) : (
+              <div>
+                <NewsList news={this.state.data.article} />
+                <Pagination
+                  next={this.next}
+                  prev={this.prev}
+                  isPrevious={isPrevious}
+                  isNext={isNext}
+                  totalPage={totalPage}
+                  currentPage={currentPage}
+                />
+              </div>
+            )}
+
             {/* <Loading /> */}
           </div>
         </div>
